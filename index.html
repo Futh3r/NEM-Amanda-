@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nothing Else Matters — For Amanda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Caveat:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Pacifico&family=Pinyon+Script&family=Playfair+Display:wght@400;500;600;700;800&family=Satisfy&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#000;
+      --purple:#b96cff;
+      --purple2:#7a2cff;
+      --pink:#ff8fd8;
+      --white:#f7f1ff;
+      --muted:rgba(247,241,255,.74);
+    }
+
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#000;color:var(--white);font-family:Inter,system-ui,sans-serif}
+    body{background:
+      radial-gradient(circle at 50% 46%, rgba(185,108,255,.14), transparent 12%),
+      radial-gradient(circle at 50% 50%, rgba(255,143,216,.08), transparent 24%),
+      #000;
+    }
+
+    #stars, #glow{position:fixed; inset:0; width:100%; height:100%; pointer-events:none;}
+    #glow{mix-blend-mode:screen; opacity:.8}
+
+    /* ── NEW: nebula canvas layer ── */
+    #nebula{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.55;mix-blend-mode:screen;}
+
+    .scene{position:relative;width:100%;height:100%;overflow:hidden;background:#000}
+    .grain{
+      position:absolute; inset:0;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" stitchTiles="stitch"/></filter><rect width="120" height="120" filter="url(%23n)" opacity="0.15"/></svg>');
+      opacity:.1; mix-blend-mode:soft-light; pointer-events:none;
+    }
+
+    .ambient-glow{
+      position:absolute; left:50%; top:50%; width:520px; height:520px; transform:translate(-50%,-50%);
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(185,108,255,.18) 0%, rgba(185,108,255,.10) 18%, rgba(185,108,255,.04) 34%, transparent 65%);
+      filter:blur(10px);
+      opacity:.95;
+      animation:breathe 7.5s ease-in-out infinite;
+      pointer-events:none;
+      z-index:1;
+    }
+    @keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(.95);opacity:.78}50%{transform:translate(-50%,-50%) scale(1.05);opacity:1}}
+
+    /* ── NEW: floating aurora ribbons ── */
+    .aurora{
+      position:absolute; pointer-events:none; border-radius:50%; filter:blur(38px); mix-blend-mode:screen; z-index:1;
+      animation:auroraDrift ease-in-out infinite;
+    }
+    .aurora-1{width:700px;height:180px;top:18%;left:-8%;background:linear-gradient(90deg,transparent,rgba(185,108,255,.18),rgba(255,143,216,.14),transparent);animation-duration:16s;animation-delay:0s}
+    .aurora-2{width:600px;height:130px;top:62%;left:28%;background:linear-gradient(90deg,transparent,rgba(122,44,255,.16),rgba(185,108,255,.12),transparent);animation-duration:20s;animation-delay:-7s}
+    .aurora-3{width:500px;height:100px;top:38%;left:55%;background:linear-gradient(90deg,transparent,rgba(255,143,216,.14),rgba(185,108,255,.10),transparent);animation-duration:14s;animation-delay:-4s}
+    @keyframes auroraDrift{0%,100%{transform:translateX(0) scaleY(1);opacity:.55}50%{transform:translateX(40px) scaleY(1.3);opacity:1}}
+
+    /* ── NEW: shooting stars ── */
+    .shooting-star{
+      position:absolute; pointer-events:none; top:0; left:0;
+      width:2px; height:2px; background:#fff; border-radius:50%;
+      box-shadow:0 0 6px 1px rgba(255,255,255,.6);
+      animation:shootStar linear forwards;
+      opacity:0;
+    }
+    @keyframes shootStar{
+      0%{transform:translate(var(--sx),var(--sy)) rotate(var(--angle)) scaleX(1);opacity:1}
+      100%{transform:translate(var(--ex),var(--ey)) rotate(var(--angle)) scaleX(0);opacity:0}
+    }
+
+    .content{position:absolute;inset:0;display:grid;place-items:center;padding:24px;z-index:2}
+    .center{width:min(1020px,100%);min-height:420px;position:relative;display:grid;place-items:center;text-align:center}
+
+    .start-wrap{position:absolute;inset:0;display:grid;place-items:center;z-index:12;transition:opacity .9s ease, transform .9s ease}
+    .play-btn{
+      width:96px;height:96px;border-radius:50%;border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(180deg, rgba(185,108,255,.96), rgba(122,44,255,.86)); color:#fff; cursor:pointer;
+      box-shadow:0 14px 36px rgba(122,44,255,.36), 0 0 30px rgba(185,108,255,.22);
+      display:grid;place-items:center;font-size:1.6rem;transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .play-btn:hover{transform:scale(1.05); box-shadow:0 16px 46px rgba(122,44,255,.44), 0 0 36px rgba(185,108,255,.3)}
+    .play-label{margin-top:14px;font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.66)}
+
+    .intro-scene, .song-scene, .lyric-scene, .end-scene{
+      position:absolute; inset:0; display:grid; place-items:center; opacity:0; transform:translateY(10px) scale(.99); filter:blur(6px);
+      transition:opacity 1.05s ease, transform 1.05s ease, filter 1.05s ease;
+      pointer-events:none;
+    }
+    .visible{opacity:1;transform:none;filter:none}
+
+    .scene-particles, .effect-layer{
+      position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0;
+    }
+
+    .scene-particles span{
+      position:absolute; left:50%; top:50%; width:7px; height:7px; border-radius:50%;
+      background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(185,108,255,.95) 32%, rgba(185,108,255,.0) 75%);
+      box-shadow:0 0 16px rgba(185,108,255,.35), 0 0 24px rgba(185,108,255,.16);
+      animation: driftParticle linear infinite; opacity:0;
+    }
+    @keyframes driftParticle{
+      0%{transform:translate3d(var(--x1), var(--y1), 0) scale(.55); opacity:0}
+      10%{opacity:.75}
+      50%{opacity:1}
+      100%{transform:translate3d(var(--x2), var(--y2), 0) scale(1); opacity:0}
+    }
+
+    .effect-layer span{
+      position:absolute; display:block; opacity:0; pointer-events:none;
+    }
+
+    .orb{
+      width:18px; height:18px; border-radius:50%;
+      background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,143,216,.8) 35%, rgba(185,108,255,.0) 75%);
+      box-shadow:0 0 24px rgba(255,143,216,.28), 0 0 42px rgba(185,108,255,.14);
+      animation:orbDrift 9s ease-in-out infinite;
+    }
+    @keyframes orbDrift{
+      0%,100%{transform:translateY(0) scale(.9); opacity:.3}
+      50%{transform:translateY(-18px) scale(1.15); opacity:1}
+    }
+
+    .spiral{
+      width:340px; height:340px; left:50%; top:50%; transform:translate(-50%,-50%);
+      border-radius:50%;
+      background:
+        conic-gradient(from 0deg, rgba(255,143,216,.0), rgba(255,143,216,.18), rgba(185,108,255,.45), rgba(255,143,216,.18), rgba(255,143,216,.0));
+      filter:blur(16px);
+      mix-blend-mode:screen;
+      animation:spin 14s linear infinite;
+    }
+    @keyframes spin{from{transform:translate(-50%,-50%) rotate(0deg) scale(1)}to{transform:translate(-50%,-50%) rotate(360deg) scale(1.08)}}
+
+    .wave{
+      width:120%; height:220px; left:-10%; top:40%;
+      background:radial-gradient(circle at 50% 50%, rgba(185,108,255,.24), transparent 60%);
+      filter:blur(24px);
+      animation:waveMove 10s ease-in-out infinite;
+    }
+    @keyframes waveMove{
+      0%,100%{transform:translateY(0) scaleX(1)}
+      50%{transform:translateY(-12px) scaleX(1.05)}
+    }
+
+    .sparkle-ring{
+      width:420px; height:420px; left:50%; top:50%; transform:translate(-50%,-50%);
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:0 0 70px rgba(185,108,255,.08) inset;
+      animation:rotateRing 18s linear infinite;
+    }
+    @keyframes rotateRing{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+    /* ── NEW: pulse ring that expands from center on each lyric ── */
+    .pulse-ring{
+      position:absolute; left:50%; top:50%;
+      width:60px; height:60px; border-radius:50%;
+      border:1.5px solid rgba(185,108,255,.7);
+      transform:translate(-50%,-50%) scale(1);
+      animation:pulseExpand 1.4s cubic-bezier(.22,.61,.36,1) forwards;
+      pointer-events:none; z-index:3;
+    }
+    @keyframes pulseExpand{
+      0%{transform:translate(-50%,-50%) scale(1);opacity:.9}
+      100%{transform:translate(-50%,-50%) scale(8);opacity:0}
+    }
+
+    /* ══════════════════════════════════════
+       NEW: GUITAR-SOLO BIG SPIRAL EFFECT
+       ══════════════════════════════════════ */
+    .big-spiral-layer{position:absolute; inset:0; pointer-events:none; z-index:1; overflow:visible;
+      opacity:0; transition:opacity 1.4s ease;
+    }
+    .big-spiral-layer.on{opacity:1}
+    .big-spiral{
+      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+      width:620px; height:620px; border-radius:50%;
+      background:
+        conic-gradient(from 0deg,
+          rgba(255,143,216,0) 0deg,
+          rgba(255,143,216,.30) 60deg,
+          rgba(185,108,255,.55) 140deg,
+          rgba(122,44,255,.35) 220deg,
+          rgba(255,143,216,.30) 300deg,
+          rgba(255,143,216,0) 360deg);
+      filter:blur(22px);
+      mix-blend-mode:screen;
+      animation:bigSpiralSpin 22s linear infinite, bigSpiralPulse 6s ease-in-out infinite;
+    }
+    .big-spiral.alt{
+      width:420px;height:420px;
+      animation:bigSpiralSpin 16s linear infinite reverse, bigSpiralPulse 8s ease-in-out infinite;
+      filter:blur(14px);
+      opacity:.7;
+    }
+    @keyframes bigSpiralSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+    @keyframes bigSpiralPulse{0%,100%{transform:translate(-50%,-50%) scale(.94);opacity:.75}50%{transform:translate(-50%,-50%) scale(1.08);opacity:1}}
+
+    .spiral-spark{
+      position:absolute; width:6px; height:6px; border-radius:50%;
+      background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,143,216,.9) 40%, rgba(185,108,255,0) 75%);
+      box-shadow:0 0 14px rgba(255,143,216,.5), 0 0 26px rgba(185,108,255,.3);
+      animation:sparkOrbit linear infinite;
+      left:50%; top:50%;
+    }
+    @keyframes sparkOrbit{
+      from{transform:rotate(0deg) translateX(var(--orbit-r)) rotate(0deg) scale(.7); opacity:.4}
+      50%{opacity:1; transform:rotate(180deg) translateX(var(--orbit-r)) rotate(-180deg) scale(1.2)}
+      to{transform:rotate(360deg) translateX(var(--orbit-r)) rotate(-360deg) scale(.7); opacity:.4}
+    }
+
+    /* ══════════════════════════════════════
+       NEW: HEART RAIN (second guitar solo)
+       ══════════════════════════════════════ */
+    .heart-rain-layer{
+      position:absolute; inset:0; pointer-events:none; z-index:1; overflow:hidden;
+      opacity:0; transition:opacity 1.6s ease;
+    }
+    .heart-rain-layer.on{opacity:1}
+    .heart-rain-item{
+      position:absolute; top:-12%;
+      filter:drop-shadow(0 0 10px rgba(255,90,90,.55)) drop-shadow(0 0 22px rgba(255,140,140,.3));
+      animation:heartFall linear infinite, heartSway ease-in-out infinite;
+      opacity:0;
+    }
+    .heart-rain-item svg{display:block; width:100%; height:100%}
+    @keyframes heartFall{
+      0%  {transform:translateY(0) rotate(var(--rot-from));   opacity:0}
+      6%  {opacity:var(--rain-op,.85)}
+      92% {opacity:var(--rain-op,.85)}
+      100%{transform:translateY(118vh) rotate(var(--rot-to)); opacity:0}
+    }
+    @keyframes heartSway{
+      0%,100%{margin-left:0}
+      50%{margin-left:var(--sway,24px)}
+    }
+
+    /* ══════════════════════════════════════
+       NEW: WANDERING ORB + HEART BURST
+       (fills lyric gaps without dropping
+        the existing ambient particles/etc.)
+       ══════════════════════════════════════ */
+    .gap-layer{position:absolute; inset:0; pointer-events:none; z-index:1; overflow:visible;
+      opacity:0; transition:opacity .8s ease;
+    }
+    .gap-layer.on{opacity:1}
+
+    .big-orb{
+      position:absolute; width:46px; height:46px; border-radius:50%;
+      left:50%; top:50%;
+      background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,143,216,.95) 30%, rgba(185,108,255,.55) 60%, rgba(185,108,255,0) 78%);
+      box-shadow:0 0 40px rgba(255,143,216,.55), 0 0 80px rgba(185,108,255,.35), 0 0 120px rgba(185,108,255,.18);
+      transform:translate(-50%,-50%);
+      animation:bigOrbWander var(--wander-dur,12s) ease-in-out infinite;
+      opacity:0;
+      transition:opacity .9s ease, transform .25s ease;
+    }
+    .big-orb.show{opacity:1}
+    .big-orb.collapse{
+      animation:none;
+      transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .35s ease;
+      transform:translate(-50%,-50%) scale(.2);
+      opacity:0;
+    }
+    @keyframes bigOrbWander{
+      0%   {transform:translate(-50%,-50%) translate(var(--p0x),var(--p0y)) scale(1)}
+      25%  {transform:translate(-50%,-50%) translate(var(--p1x),var(--p1y)) scale(1.15)}
+      50%  {transform:translate(-50%,-50%) translate(var(--p2x),var(--p2y)) scale(.92)}
+      75%  {transform:translate(-50%,-50%) translate(var(--p3x),var(--p3y)) scale(1.1)}
+      100% {transform:translate(-50%,-50%) translate(var(--p0x),var(--p0y)) scale(1)}
+    }
+
+    .heart-burst{
+      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.2);
+      width:180px; height:180px;
+      opacity:0; pointer-events:none; z-index:2;
+      animation:heartBurst 1.1s cubic-bezier(.22,.61,.36,1) forwards;
+      filter:drop-shadow(0 0 14px rgba(255,90,210,.85)) drop-shadow(0 0 36px rgba(185,108,255,.5));
+    }
+    .heart-burst svg{display:block; width:100%; height:100%}
+    @keyframes heartBurst{
+      0%  {transform:translate(-50%,-50%) scale(.2); opacity:0}
+      35% {transform:translate(-50%,-50%) scale(1.25); opacity:1}
+      70% {transform:translate(-50%,-50%) scale(1.05); opacity:1}
+      100%{transform:translate(-50%,-50%) scale(2.6); opacity:0}
+    }
+
+    /* ══════════════════════════════════════
+       NEW: "NOW PLAYING" SCREEN (guitar intro)
+       ══════════════════════════════════════ */
+    .now-playing-scene{position:absolute; inset:0; display:grid; place-items:center;
+      opacity:0; transform:translateY(10px) scale(.99); filter:blur(6px);
+      transition:opacity 1.05s ease, transform 1.05s ease, filter 1.05s ease;
+      pointer-events:none;
+    }
+    .now-playing-scene.visible{opacity:1;transform:none;filter:none}
+    .np-stack{display:grid;gap:14px;place-items:center;text-align:center;position:relative;z-index:2}
+    .np-label{
+      font-family:'Cormorant Garamond', serif;
+      letter-spacing:.32em; text-transform:uppercase;
+      font-size:clamp(.85rem,1.6vw,1.15rem);
+      color:rgba(255,255,255,.55);
+    }
+    .np-title{
+      font-family:'Playfair Display', serif; font-weight:600;
+      font-size:clamp(2.6rem,7.5vw,6rem); line-height:1.05;
+      text-shadow:0 0 26px rgba(185,108,255,.34), 0 0 46px rgba(255,143,216,.16);
+    }
+    .np-sub{
+      font-family:'Caveat', cursive; font-size:clamp(1.3rem,3vw,2.1rem);
+      color:var(--pink);
+    }
+
+    /* ── INTRO ── */
+    .intro-stack{max-width:920px;width:100%;display:grid;gap:18px;place-items:center;position:relative;z-index:2}
+    .type-line{
+      font-family:'Cormorant Garamond', serif;
+      font-size:clamp(1.7rem,3.6vw,3.25rem);
+      line-height:1.22;
+      margin:0;
+      color:var(--white);
+      text-shadow:0 0 18px rgba(185,108,255,.18);
+      min-height:1.25em;
+      opacity:0;
+      transform:translateY(10px);
+    }
+    .type-line.show{opacity:1;transform:none;transition:opacity .9s ease, transform .9s ease}
+    .type-line.script{font-family:'Dancing Script', cursive; color:var(--pink); font-size:clamp(2rem,4.4vw,3.7rem)}
+    .sparkle-line{
+      width:min(420px,72vw); height:1px;
+      background:linear-gradient(90deg, transparent, rgba(185,108,255,.78), rgba(255,143,216,.72), transparent);
+      box-shadow:0 0 20px rgba(185,108,255,.28);
+      opacity:0; transform:scaleX(.6); transition:opacity .8s ease, transform .8s ease;
+    }
+    .sparkle-line.show{opacity:1;transform:scaleX(1)}
+    .signature{display:grid;gap:8px;place-items:center;opacity:0;transform:translateY(10px) scale(.99);transition:opacity 1s ease, transform 1s ease}
+    .signature.show{opacity:1;transform:none}
+    .para{font-family:'Cormorant Garamond', serif;font-size:clamp(1.2rem,2.2vw,1.8rem);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.78)}
+    .amanda{font-family:'Dancing Script', cursive;font-size:clamp(3rem,7vw,6rem);line-height:1;color:var(--white);text-shadow:0 0 20px rgba(185,108,255,.22)}
+    .heart{font-size:2rem;color:var(--pink);opacity:0;transform:translateY(6px);transition:opacity 1s ease, transform 1s ease}
+    .heart.show{opacity:1;transform:none}
+
+    .blackout{position:absolute;inset:0;background:#000;opacity:0;transition:opacity 1.2s ease;z-index:8;pointer-events:none}
+    .blackout.on{opacity:1}
+
+    /* ── SONG TITLE ── */
+    .song-scene .song-title, .song-scene .song-by, .song-scene .song-note{display:none !important;}
+
+    .song-scene .song-main{
+      font-family:'Playfair Display', serif;
+      font-size:clamp(3rem,7vw,6.3rem);
+      font-weight:600;
+      line-height:1;
+      text-shadow:0 0 26px rgba(185,108,255,.34), 0 0 46px rgba(255,143,216,.16);
+      position:relative; z-index:2;
+      white-space:nowrap;
+      max-width:min(95vw, 1100px);
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .song-scene .song-main::after{
+      content:'';
+      position:absolute;
+      inset:-50px -120px;
+      background:radial-gradient(circle, rgba(255,255,255,.12), rgba(185,108,255,.12) 28%, transparent 68%);
+      filter:blur(10px);
+      z-index:-1;
+      animation:breathGlow 6.5s ease-in-out infinite;
+    }
+    @keyframes breathGlow{0%,100%{transform:scale(.96);opacity:.75}50%{transform:scale(1.05);opacity:1}}
+
+    /* ══════════════════════════════════════
+       LYRIC SCENE — centered, karaoke style
+       ══════════════════════════════════════ */
+    .lyric-scene{transition:opacity 1.1s ease, transform 1.1s ease, filter 1.1s ease}
+
+    /* full-viewport centering */
+    .lyric-scene{
+      display:flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+    }
+
+    .lyric-line-wrap{
+      position:relative;
+      width:min(1200px, 96vw);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px 24px;
+      z-index:2;
+      /* remove min-height so it truly centers without offset */
+    }
+
+    /* ── karaoke char container ── */
+    #lyricText{
+      position:relative; z-index:2;
+      line-height:1.05;
+      white-space:nowrap;
+      text-wrap:nowrap;
+      word-break:keep-all;
+      overflow-wrap:normal;
+      max-width:100%;
+      text-align:center;
+    }
+
+    /* individual char spans */
+    .lyric-char{
+      display:inline-block;
+      opacity:0;
+      transform:translateY(14px) scale(.88);
+      /* base transition; JS sets per-char delay */
+      transition:opacity .28s cubic-bezier(.22,.61,.36,1), transform .28s cubic-bezier(.22,.61,.36,1), text-shadow .28s ease;
+      will-change:opacity,transform;
+    }
+    .lyric-char.lit{
+      opacity:1;
+      transform:none;
+      text-shadow:
+        0 0 12px currentColor,
+        0 0 28px rgba(185,108,255,.45),
+        0 0 48px rgba(255,143,216,.22);
+    }
+
+    /* font + color helpers */
+    .lyric-text.playfair{font-family:'Playfair Display', serif}
+    .lyric-text.cormorant{font-family:'Cormorant Garamond', serif}
+    .lyric-text.dancing{font-family:'Dancing Script', cursive}
+    .lyric-text.satisfy{font-family:'Satisfy', cursive}
+    .lyric-text.caveat{font-family:'Caveat', cursive}
+    .lyric-text.pacifico{font-family:'Pacifico', cursive}
+    .lyric-text.pinyon{font-family:'Pinyon Script', cursive}
+    .lyric-text.allura{font-family:'Allura', cursive}
+    .lyric-text.greatvibes{font-family:'Great Vibes', cursive}
+    .lyric-text.color-white{color:var(--white)}
+    .lyric-text.color-pink{color:var(--pink)}
+    .lyric-text.color-purple{color:var(--purple)}
+
+    .lyric-dust,
+    .lyric-icons{position:absolute; inset:0; pointer-events:none; z-index:1; overflow:hidden}
+
+    .dust-dot{
+      position:absolute; width:5px; height:5px; border-radius:50%;
+      background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,143,216,.9) 35%, rgba(185,108,255,0) 75%);
+      box-shadow:0 0 16px rgba(255,143,216,.22), 0 0 24px rgba(185,108,255,.18);
+      animation:dustFloat linear infinite;
+      opacity:0;
+    }
+    @keyframes dustFloat{
+      0%{transform:translate3d(var(--x1), var(--y1), 0) scale(.6); opacity:0}
+      10%{opacity:.7}
+      50%{opacity:1}
+      100%{transform:translate3d(var(--x2), var(--y2), 0) scale(1); opacity:0}
+    }
+
+    .note-icon{
+      position:absolute; font-size:1.35rem; opacity:0;
+      filter:drop-shadow(0 0 8px rgba(185,108,255,.35));
+      animation:floaty 5s ease-in-out infinite;
+    }
+    @keyframes floaty{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-14px) rotate(8deg)}}
+
+    /* ── END SCENE ── */
+    .end-main{font-family:'Cormorant Garamond', serif;font-size:clamp(2.2rem,4.5vw,4.7rem);line-height:1.1;text-align:center;text-shadow:0 0 18px rgba(185,108,255,.16); position:relative; z-index:2;
+      opacity:0; transform:translateY(8px) scale(.99);
+      transition:opacity 1.4s ease, transform 1.4s ease;
+    }
+    .end-main.show{opacity:1; transform:none}
+    .end-main.fade-out{opacity:0; transform:translateY(-10px) scale(.98); transition:opacity 1.2s ease, transform 1.2s ease}
+    .end-sig{display:block;margin-top:18px;font-family:'Dancing Script', cursive;color:var(--pink);font-size:clamp(2rem,4vw,3.5rem)}
+
+    /* ── final "te amo" message ── */
+    .end-final{
+      position:absolute; inset:0; display:grid; place-items:center; text-align:center;
+      opacity:0; transform:translateY(14px) scale(.97);
+      transition:opacity 1.6s ease, transform 1.6s ease;
+      z-index:3; pointer-events:none;
+    }
+    .end-final.show{opacity:1; transform:none}
+    .end-final-inner{display:grid; gap:18px; place-items:center; position:relative;}
+    .end-final-deco{
+      display:flex; gap:18px; align-items:center; justify-content:center;
+      font-size:clamp(1.4rem,3vw,2.2rem);
+      filter:drop-shadow(0 0 10px rgba(255,143,216,.4));
+      opacity:.9;
+    }
+    .end-final-deco span{animation:floaty 5s ease-in-out infinite}
+    .end-final-deco span:nth-child(2){animation-delay:-1.5s}
+    .end-final-deco span:nth-child(3){animation-delay:-3s}
+    .end-final-text{
+      font-family:'Great Vibes', cursive;
+      font-size:clamp(3rem,8vw,6.5rem);
+      line-height:1.15;
+      color:var(--white);
+      background:linear-gradient(135deg, #ffd6f5 0%, var(--pink) 45%, var(--purple) 100%);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      text-shadow:none;
+      filter:drop-shadow(0 0 22px rgba(255,90,210,.45)) drop-shadow(0 0 50px rgba(185,108,255,.3));
+      animation:finalGlow 4.5s ease-in-out infinite;
+    }
+    @keyframes finalGlow{
+      0%,100%{filter:drop-shadow(0 0 22px rgba(255,90,210,.45)) drop-shadow(0 0 50px rgba(185,108,255,.3))}
+      50%{filter:drop-shadow(0 0 34px rgba(255,90,210,.7)) drop-shadow(0 0 70px rgba(185,108,255,.5))}
+    }
+    .end-final-rule{
+      width:min(360px,70vw); height:1px;
+      background:linear-gradient(90deg, transparent, rgba(255,143,216,.8), rgba(185,108,255,.7), transparent);
+      box-shadow:0 0 18px rgba(255,143,216,.35);
+    }
+    .end-final-heart{
+      width:120px; height:120px;
+      filter:drop-shadow(0 0 16px rgba(255,90,210,.8)) drop-shadow(0 0 40px rgba(185,108,255,.5));
+      animation:finalHeartBeat 2.6s ease-in-out infinite;
+    }
+    .end-final-heart svg{display:block; width:100%; height:100%}
+    @keyframes finalHeartBeat{
+      0%,100%{transform:scale(1)}
+      50%{transform:scale(1.08)}
+    }
+
+    .scene-glow{
+      position:absolute; inset:auto auto 18% 50%; width:560px; height:560px; transform:translateX(-50%);
+      border-radius:50%; pointer-events:none; opacity:0; filter:blur(12px);
+      background:radial-gradient(circle, rgba(185,108,255,.22), rgba(185,108,255,.08) 24%, transparent 66%);
+      transition:opacity .8s ease, transform .8s ease;
+      z-index:1;
+    }
+    .scene-glow.on{opacity:1}
+
+    .orbit-ring{
+      position:absolute; left:50%; top:50%; width:340px; height:340px; transform:translate(-50%,-50%);
+      border-radius:50%; border:1px solid rgba(185,108,255,.08);
+      box-shadow:0 0 60px rgba(185,108,255,.08) inset;
+      opacity:0; transition:opacity .9s ease;
+      z-index:1;
+    }
+    .orbit-ring.on{opacity:1}
+
+    @media (max-width:720px){
+      .content{padding:16px}
+      .center{min-height:360px}
+      .play-btn{width:84px;height:84px;font-size:1.4rem}
+      .song-scene .song-main{font-size:clamp(2.4rem,10vw,4rem); max-width:96vw}
+      .lyric-line-wrap{padding:16px}
+      #lyricText{font-size:clamp(1.7rem,6vw,3.2rem) !important}
+      .scene-glow{width:360px;height:360px;bottom:12%}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <canvas id="glow"></canvas>
+  <canvas id="nebula"></canvas>
+
+  <div class="scene">
+    <div class="grain"></div>
+    <div class="ambient-glow"></div>
+
+    <!-- Aurora ribbons -->
+    <div class="aurora aurora-1"></div>
+    <div class="aurora aurora-2"></div>
+    <div class="aurora aurora-3"></div>
+
+    <div class="content">
+      <div class="center">
+        <div id="sceneGlow" class="scene-glow"></div>
+        <div id="orbitRing" class="orbit-ring"></div>
+
+        <div id="introScene" class="intro-scene">
+          <div id="introParticles" class="scene-particles"></div>
+          <div class="intro-stack">
+            <p id="line1" class="type-line"></p>
+            <p id="line2" class="type-line"></p>
+            <p id="line3" class="type-line"></p>
+            <div id="sparkLine" class="sparkle-line"></div>
+            <div id="signature" class="signature">
+              <div class="para">Para</div>
+              <div class="amanda">Amanda</div>
+              <div id="heart" class="heart">💜</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="songScene" class="song-scene">
+          <div id="songParticles" class="scene-particles"></div>
+          <div id="songSpiral" class="effect-layer"></div>
+          <div class="song-title">
+            <div class="song-main">Nothing Else Matters</div>
+          </div>
+        </div>
+
+        <div id="nowPlayingScene" class="now-playing-scene">
+          <div id="npParticles" class="scene-particles"></div>
+          <div class="np-stack">
+            <div class="np-label">Now playing</div>
+            <div class="np-title">Nothing Else Matters</div>
+            <div class="np-sub">A song that speaks more than words 💕</div>
+          </div>
+        </div>
+
+        <div id="lyricScene" class="lyric-scene">
+          <div id="lyricParticles" class="scene-particles"></div>
+          <div id="lyricEffects" class="effect-layer"></div>
+          <div id="bigSpiralLayer" class="big-spiral-layer"></div>
+          <div id="heartRainLayer" class="heart-rain-layer"></div>
+          <div id="gapLayer" class="gap-layer"></div>
+          <div class="lyric-line-wrap">
+            <div id="lyricDust" class="lyric-dust"></div>
+            <div id="lyricIcons" class="lyric-icons"></div>
+            <!-- lyric-text class applied dynamically; font-size set via fitText -->
+            <div id="lyricText" class="lyric-text color-white playfair" style="font-size:clamp(2rem,4.3vw,4.3rem);"></div>
+          </div>
+        </div>
+
+        <div id="endScene" class="end-scene">
+          <div id="endParticles" class="scene-particles"></div>
+          <div id="endEffects" class="effect-layer"></div>
+          <div id="endMain" class="end-main">
+            Gracias por ser una persona tan especial en mi vida.
+            <span class="end-sig">Amanda 💜</span>
+          </div>
+          <div id="endFinal" class="end-final">
+            <div class="end-final-inner">
+              <div class="end-final-deco"><span>✦</span><span>💜</span><span>✦</span></div>
+              <div id="endFinalHeart" class="end-final-heart"></div>
+              <div class="end-final-text">Te amo con todo mi ser</div>
+              <div class="end-final-rule"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="startWrap" class="start-wrap">
+          <div style="display:grid;place-items:center;gap:12px;">
+            <button id="playBtn" class="play-btn">▶</button>
+            <div class="play-label">play</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="blackout" class="blackout"></div>
+  </div>
+
+  <audio id="audio" preload="auto" src="audio/song.mp3"></audio>
+
+  <script>
+    /* ─────────────────────────────────────────
+       ELEMENT REFS
+    ───────────────────────────────────────── */
+    const audio      = document.getElementById('audio');
+    const playBtn    = document.getElementById('playBtn');
+    const startWrap  = document.getElementById('startWrap');
+    const blackout   = document.getElementById('blackout');
+    const sceneGlow  = document.getElementById('sceneGlow');
+    const orbitRing  = document.getElementById('orbitRing');
+
+    const introScene = document.getElementById('introScene');
+    const songScene  = document.getElementById('songScene');
+    const nowPlayingScene = document.getElementById('nowPlayingScene');
+    const lyricScene = document.getElementById('lyricScene');
+    const endScene   = document.getElementById('endScene');
+    const endMain    = document.getElementById('endMain');
+    const endFinal   = document.getElementById('endFinal');
+    const endFinalHeart = document.getElementById('endFinalHeart');
+
+    const introParticles = document.getElementById('introParticles');
+    const songParticles  = document.getElementById('songParticles');
+    const npParticles     = document.getElementById('npParticles');
+    const lyricParticles = document.getElementById('lyricParticles');
+    const endParticles   = document.getElementById('endParticles');
+    const songSpiral     = document.getElementById('songSpiral');
+    const lyricEffects   = document.getElementById('lyricEffects');
+    const endEffects     = document.getElementById('endEffects');
+    const bigSpiralLayer = document.getElementById('bigSpiralLayer');
+    const heartRainLayer = document.getElementById('heartRainLayer');
+    const gapLayer       = document.getElementById('gapLayer');
+
+    const line1      = document.getElementById('line1');
+    const line2      = document.getElementById('line2');
+    const line3      = document.getElementById('line3');
+    const sparkLine  = document.getElementById('sparkLine');
+    const signature  = document.getElementById('signature');
+    const heart      = document.getElementById('heart');
+
+    const lyricText  = document.getElementById('lyricText');
+    const lyricDust  = document.getElementById('lyricDust');
+    const lyricIcons = document.getElementById('lyricIcons');
+
+    let introRunning  = false;
+    let currentLyricId = '';
+    let lyrics = [];
+    let firstLyricStart = Infinity;
+    let lastLyricEnd    = 0;
+
+    /* ─────────────────────────────────────────
+       NEBULA BACKGROUND
+    ───────────────────────────────────────── */
+    const nebCanvas = document.getElementById('nebula');
+    const nebCtx    = nebCanvas.getContext('2d');
+    const nebOrbs   = [];
+
+    function initNebula() {
+      const dpr = window.devicePixelRatio || 1;
+      nebCanvas.width  = innerWidth  * dpr;
+      nebCanvas.height = innerHeight * dpr;
+      nebCanvas.style.width  = innerWidth  + 'px';
+      nebCanvas.style.height = innerHeight + 'px';
+      nebCtx.setTransform(dpr,0,0,dpr,0,0);
+      nebOrbs.length = 0;
+      for (let i = 0; i < 6; i++) {
+        nebOrbs.push({
+          x: Math.random() * innerWidth,
+          y: Math.random() * innerHeight,
+          r: 140 + Math.random() * 200,
+          hue: 265 + Math.random() * 60,
+          a: Math.random() * Math.PI * 2,
+          s: .0008 + Math.random() * .001,
+          vx: (Math.random()-.5) * .12,
+          vy: (Math.random()-.5) * .12,
+          alpha: .06 + Math.random() * .09,
+        });
+      }
+    }
+
+    function drawNebula() {
+      nebCtx.clearRect(0,0,innerWidth,innerHeight);
+      for (const o of nebOrbs) {
+        o.a += o.s;
+        o.x += o.vx + Math.sin(o.a) * .4;
+        o.y += o.vy + Math.cos(o.a * .7) * .3;
+        if (o.x < -o.r) o.x = innerWidth + o.r;
+        if (o.x > innerWidth + o.r) o.x = -o.r;
+        if (o.y < -o.r) o.y = innerHeight + o.r;
+        if (o.y > innerHeight + o.r) o.y = -o.r;
+        const g = nebCtx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);
+        g.addColorStop(0, `hsla(${o.hue},90%,72%,${o.alpha})`);
+        g.addColorStop(1, 'hsla(0,0%,0%,0)');
+        nebCtx.fillStyle = g;
+        nebCtx.beginPath();
+        nebCtx.arc(o.x,o.y,o.r,0,Math.PI*2);
+        nebCtx.fill();
+      }
+      requestAnimationFrame(drawNebula);
+    }
+
+    /* ─────────────────────────────────────────
+       SHOOTING STARS
+    ───────────────────────────────────────── */
+    function spawnShootingStar() {
+      const el = document.createElement('div');
+      el.className = 'shooting-star';
+      const sx = Math.random() * innerWidth;
+      const sy = Math.random() * innerHeight * .5;
+      const len = 120 + Math.random() * 180;
+      const angle = 20 + Math.random() * 30; // degrees
+      const rad   = (angle * Math.PI) / 180;
+      const ex    = sx + len * Math.cos(rad);
+      const ey    = sy + len * Math.sin(rad);
+      el.style.setProperty('--sx', sx+'px');
+      el.style.setProperty('--sy', sy+'px');
+      el.style.setProperty('--ex', ex+'px');
+      el.style.setProperty('--ey', ey+'px');
+      el.style.setProperty('--angle', angle+'deg');
+      const dur = 0.5 + Math.random() * 0.6;
+      el.style.animationDuration = dur + 's';
+      // trail via box-shadow
+      el.style.boxShadow = `0 0 ${4+Math.random()*4}px rgba(255,255,255,.8), -${len*.6}px -${len*.6*Math.tan(rad)}px ${len*.7}px rgba(185,108,255,0)`;
+      document.querySelector('.scene').appendChild(el);
+      setTimeout(() => el.remove(), dur * 1000 + 100);
+    }
+
+    // shoot a star every 4–9s
+    function scheduleShootingStar() {
+      spawnShootingStar();
+      setTimeout(scheduleShootingStar, 4000 + Math.random() * 5000);
+    }
+    scheduleShootingStar();
+
+    /* ─────────────────────────────────────────
+       PULSE RING (on each new lyric)
+    ───────────────────────────────────────── */
+    function spawnPulseRing() {
+      const r = document.createElement('div');
+      r.className = 'pulse-ring';
+      document.getElementById('lyricScene').appendChild(r);
+      setTimeout(() => r.remove(), 1500);
+    }
+
+    /* ─────────────────────────────────────────
+       INTRO HELPERS
+    ───────────────────────────────────────── */
+    const introSleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    async function typeInto(el, text, speed = 42) {
+      el.textContent = '';
+      el.classList.add('show');
+      for (let i = 0; i < text.length; i++) {
+        el.textContent += text[i];
+        await introSleep(speed);
+      }
+    }
+
+    function clearIntro() {
+      [line1, line2, line3].forEach(el => { el.textContent = ''; el.className = 'type-line'; });
+      signature.classList.remove('show');
+      sparkLine.classList.remove('show');
+      heart.classList.remove('show');
+    }
+
+    function hideScenes() {
+      [introScene, songScene, nowPlayingScene, lyricScene, endScene].forEach(el => el.classList.remove('visible'));
+    }
+
+    function showScene(el) {
+      hideScenes();
+      el.classList.add('visible');
+    }
+
+    function makeParticles(container, count, intensity = 1) {
+      if (!container) return;
+      container.innerHTML = '';
+      const w = container.clientWidth  || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      for (let i = 0; i < count; i++) {
+        const p  = document.createElement('span');
+        const sz = (Math.random() * 5 + 3) * intensity;
+        const x1 = (Math.random() * w - w * .5) + 'px';
+        const y1 = (Math.random() * h - h * .5) + 'px';
+        const x2 = (Math.random() * w - w * .5) + 'px';
+        const y2 = (Math.random() * h - h * .5) + 'px';
+        p.style.width  = `${sz}px`;
+        p.style.height = `${sz}px`;
+        p.style.setProperty('--x1', x1);
+        p.style.setProperty('--y1', y1);
+        p.style.setProperty('--x2', x2);
+        p.style.setProperty('--y2', y2);
+        p.style.left = `${Math.random() * 100}%`;
+        p.style.top  = `${Math.random() * 100}%`;
+        p.style.animationDuration = `${8 + Math.random() * 12}s`;
+        p.style.animationDelay    = `${Math.random() * 6}s`;
+        container.appendChild(p);
+      }
+    }
+
+    function refreshAmbientParticles() {
+      makeParticles(introParticles, 42, 1.2);
+      makeParticles(songParticles,  28, 1.08);
+      makeParticles(npParticles,    30, 1.1);
+      makeParticles(lyricParticles, 36, 1.0);
+      makeParticles(endParticles,   20, 1.1);
+      makeParticles(lyricDust,      22, 0.9);
+    }
+
+    /* ─────────────────────────────────────────
+       TEXT SIZING  (keeps lyrics on one line)
+    ───────────────────────────────────────── */
+    function fitText(el, maxFontPx, minFontPx = 16) {
+      el.style.whiteSpace      = 'nowrap';
+      el.style.wordBreak       = 'keep-all';
+      el.style.overflowWrap    = 'normal';
+      let size = maxFontPx;
+      el.style.fontSize = `${size}px`;
+      const parentWidth = el.parentElement ? el.parentElement.clientWidth : window.innerWidth;
+      while (el.scrollWidth > parentWidth - 32 && size > minFontPx) {
+        size -= 1;
+        el.style.fontSize = `${size}px`;
+      }
+    }
+
+    /* ─────────────────────────────────────────
+       KARAOKE CHAR-BY-CHAR ANIMATION
+    ───────────────────────────────────────── */
+    function buildKaraokeChars(el, text) {
+      el.innerHTML = '';
+      // split preserving spaces
+      for (let i = 0; i < text.length; i++) {
+        const ch  = document.createElement('span');
+        ch.className = 'lyric-char';
+        ch.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+        // stagger: 28ms per char, max total ~600ms regardless of length
+        const stagger = Math.min(28, 560 / text.length);
+        ch.style.transitionDelay = `${i * stagger}ms`;
+        el.appendChild(ch);
+      }
+    }
+
+    function triggerKaraokeReveal(el) {
+      // force reflow so transitions fire from hidden state
+      void el.offsetWidth;
+      const chars = el.querySelectorAll('.lyric-char');
+      chars.forEach(ch => ch.classList.add('lit'));
+    }
+
+    /* ─────────────────────────────────────────
+       SCENE MOOD
+    ───────────────────────────────────────── */
+    function inferScene(text) {
+      const t = (text || '').toLowerCase();
+      if (t.includes('heart'))            return { glow:true,  ring:false, deco:['💌','♡','✧'],     style:'dancing color-pink' };
+      if (t.includes('so close'))         return { glow:true,  ring:true,  deco:['⭐','⭐','✦'],     style:'greatvibes color-white' };
+      if (t.includes('forever'))          return { glow:true,  ring:true,  deco:['🌹','💜','✦'],     style:'playfair color-white' };
+      if (t.includes('nothing else'))     return { glow:true,  ring:false, deco:['✦','💜','✦'],     style:'playfair color-white' };
+      if (t.includes('never opened'))     return { glow:false, ring:true,  deco:['📖','✧'],          style:'allura color-pink' };
+      if (t.includes('life is ours'))     return { glow:true,  ring:false, deco:['🌌','✨'],          style:'pinyon color-white' };
+      if (t.includes('all these words'))  return { glow:false, ring:true,  deco:['✍️','♡'],           style:'satisfy color-pink' };
+      if (t.includes('trust i seek'))     return { glow:true,  ring:false, deco:['💜','🌷','✦'],     style:'playfair color-white' };
+      if (t.includes('every day'))        return { glow:true,  ring:false, deco:['✨','🌙'],          style:'caveat color-white' };
+      if (t.includes('open mind'))        return { glow:false, ring:false, deco:['🦋','✧'],          style:'pinyon color-white' };
+      if (t.includes('never cared'))      return { glow:false, ring:false, deco:['🖤','✦'],          style:'playfair color-white' };
+      if (t.includes('but i know'))       return { glow:true,  ring:false, deco:['💫'],              style:'greatvibes color-pink' };
+      return { glow:false, ring:false, deco:['✦','💜'], style:'playfair color-white' };
+    }
+
+    function applySceneMood(item) {
+      const mood = inferScene(item?.text || '');
+      sceneGlow.classList.toggle('on', !!mood.glow);
+      orbitRing.classList.toggle('on', !!mood.ring);
+      return mood;
+    }
+
+    function makeEffect(type, layer, count = 1) {
+      if (!layer) return;
+      layer.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('span');
+        if (type === 'spiral') {
+          el.className = 'spiral';
+          el.style.width  = `${280 + i * 24}px`;
+          el.style.height = `${280 + i * 24}px`;
+          el.style.animationDuration = `${14 + i * 2}s`;
+        } else if (type === 'wave') {
+          el.className = 'wave';
+          el.style.animationDuration = `${10 + i * 1.5}s`;
+          el.style.top = `${36 + i * 2}%`;
+        } else if (type === 'ring') {
+          el.className = 'sparkle-ring';
+          el.style.width  = `${360 + i * 18}px`;
+          el.style.height = `${360 + i * 18}px`;
+        } else if (type === 'orb') {
+          el.className = 'orb';
+          el.style.left = `${15 + Math.random() * 70}%`;
+          el.style.top  = `${18 + Math.random() * 55}%`;
+          el.style.animationDelay = `${Math.random() * 4}s`;
+        }
+        layer.appendChild(el);
+      }
+    }
+
+    /* ─────────────────────────────────────────
+       NEW: GUITAR-SOLO BIG SPIRAL
+    ───────────────────────────────────────── */
+    let bigSpiralBuilt = false;
+
+    function buildBigSpiral() {
+      if (bigSpiralBuilt) return;
+      bigSpiralLayer.innerHTML = '';
+
+      const main = document.createElement('div');
+      main.className = 'big-spiral';
+      bigSpiralLayer.appendChild(main);
+
+      const alt = document.createElement('div');
+      alt.className = 'big-spiral alt';
+      bigSpiralLayer.appendChild(alt);
+
+      // orbiting sparks
+      for (let i = 0; i < 10; i++) {
+        const sp = document.createElement('span');
+        sp.className = 'spiral-spark';
+        const radius = 90 + Math.random() * 220;
+        sp.style.setProperty('--orbit-r', `${radius}px`);
+        sp.style.animationDuration = `${10 + Math.random() * 14}s`;
+        sp.style.animationDelay = `${-Math.random() * 10}s`;
+        sp.style.animationDirection = (i % 2 === 0) ? 'normal' : 'reverse';
+        bigSpiralLayer.appendChild(sp);
+      }
+      bigSpiralBuilt = true;
+    }
+
+    function showBigSpiral(on) {
+      buildBigSpiral();
+      bigSpiralLayer.classList.toggle('on', !!on);
+    }
+
+    /* ─────────────────────────────────────────
+       NEW: HEART RAIN (second guitar solo)
+    ───────────────────────────────────────── */
+    // Sketchy red heart with a "wing" stroke, like the reference image
+    const RAIN_HEART_SVG = `
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="rainHeartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"  stop-color="#ff9d8a"/>
+            <stop offset="55%" stop-color="#ef5b5b"/>
+            <stop offset="100%" stop-color="#d6383f"/>
+          </linearGradient>
+        </defs>
+        <path d="M50 90
+                 C 16 64, 6 44, 7 29
+                 C 8 13, 22 6, 34 8
+                 C 44 10, 50 18, 50 28
+                 C 50 18, 58 8, 70 7
+                 C 84 6, 96 16, 95 30
+                 C 94 46, 82 64, 50 90 Z"
+              fill="none"
+              stroke="url(#rainHeartGrad)"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+        <path d="M62 18 C 64 30, 64 44, 58 56 M68 16 C 71 30, 71 46, 64 60
+                 M74 17 C 78 32, 78 48, 70 64 M80 20 C 85 35, 85 50, 76 66
+                 M86 26 C 90 38, 90 52, 82 66"
+              fill="none"
+              stroke="url(#rainHeartGrad)"
+              stroke-width="3.5"
+              stroke-linecap="round"
+              opacity="0.85"/>
+      </svg>`;
+
+    let heartRainBuilt = false;
+
+    function buildHeartRain() {
+      if (heartRainBuilt) return;
+      heartRainLayer.innerHTML = '';
+
+      const count = 26;
+      for (let i = 0; i < count; i++) {
+        const h = document.createElement('div');
+        h.className = 'heart-rain-item';
+
+        const size = 18 + Math.random() * 46; // varied sizes
+        h.style.width  = `${size}px`;
+        h.style.height = `${size}px`;
+        h.style.left   = `${Math.random() * 100}%`;
+
+        const dur = 7 + Math.random() * 9;
+        h.style.animationDuration = `${dur}s, ${3 + Math.random() * 3}s`;
+        h.style.animationDelay = `${-Math.random() * dur}s, ${-Math.random() * 4}s`;
+
+        const rotFrom = (Math.random() * 60 - 30).toFixed(1);
+        const rotTo   = (parseFloat(rotFrom) + (Math.random() * 80 - 40)).toFixed(1);
+        h.style.setProperty('--rot-from', `${rotFrom}deg`);
+        h.style.setProperty('--rot-to', `${rotTo}deg`);
+        h.style.setProperty('--sway', `${(Math.random() * 50 - 25).toFixed(0)}px`);
+        h.style.setProperty('--rain-op', (0.45 + Math.random() * 0.5).toFixed(2));
+
+        h.innerHTML = RAIN_HEART_SVG;
+        heartRainLayer.appendChild(h);
+      }
+      heartRainBuilt = true;
+    }
+
+    function showHeartRain(on) {
+      buildHeartRain();
+      heartRainLayer.classList.toggle('on', !!on);
+    }
+
+    /* ─────────────────────────────────────────
+       NEW: WANDERING ORB + HEART BURST (gap filler)
+    ───────────────────────────────────────── */
+    let gapOrbEl = null;
+    let gapState = 'idle'; // 'idle' | 'orb' | 'bursting'
+
+    function randomWanderPoints() {
+      // 4 waypoints within a safe area around center, in px offsets
+      const rangeX = Math.min(window.innerWidth * .32, 260);
+      const rangeY = Math.min(window.innerHeight * .26, 190);
+      const pts = [];
+      for (let i = 0; i < 4; i++) {
+        const x = (Math.random() * 2 - 1) * rangeX;
+        const y = (Math.random() * 2 - 1) * rangeY;
+        pts.push([x, y]);
+      }
+      return pts;
+    }
+
+    function showGapOrb() {
+      if (gapState === 'orb') return;
+      gapLayer.classList.add('on');
+
+      gapLayer.innerHTML = '';
+      gapOrbEl = document.createElement('div');
+      gapOrbEl.className = 'big-orb';
+      const pts = randomWanderPoints();
+      pts.forEach((p, idx) => {
+        gapOrbEl.style.setProperty(`--p${idx}x`, `${p[0]}px`);
+        gapOrbEl.style.setProperty(`--p${idx}y`, `${p[1]}px`);
+      });
+      gapOrbEl.style.setProperty('--wander-dur', `${10 + Math.random() * 6}s`);
+      gapLayer.appendChild(gapOrbEl);
+
+      requestAnimationFrame(() => {
+        if (gapOrbEl) gapOrbEl.classList.add('show');
+      });
+      gapState = 'orb';
+    }
+
+    // Neon outline heart matching the reference image style (glowing pink/magenta stroke)
+    const NEON_HEART_SVG = `
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="neonHeartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"  stop-color="#ff9bf0"/>
+            <stop offset="45%" stop-color="#ff5ad2"/>
+            <stop offset="100%" stop-color="#c64bff"/>
+          </linearGradient>
+        </defs>
+        <path d="M50 88
+                 C 18 62, 6 42, 6 28
+                 C 6 14, 16 6, 28 6
+                 C 38 6, 46 12, 50 22
+                 C 54 12, 62 6, 72 6
+                 C 84 6, 94 14, 94 28
+                 C 94 42, 82 62, 50 88 Z"
+              fill="none"
+              stroke="url(#neonHeartGrad)"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+      </svg>`;
+
+    function burstGapOrbToHeart() {
+      if (gapState !== 'orb') {
+        // even if no orb currently shown, still give a heart burst
+        gapLayer.classList.add('on');
+      }
+      gapState = 'bursting';
+
+      if (gapOrbEl) {
+        gapOrbEl.classList.add('collapse');
+      }
+
+      const heart = document.createElement('div');
+      heart.className = 'heart-burst';
+      heart.innerHTML = NEON_HEART_SVG;
+      gapLayer.appendChild(heart);
+
+      setTimeout(() => {
+        gapLayer.innerHTML = '';
+        gapLayer.classList.remove('on');
+        gapOrbEl = null;
+        gapState = 'idle';
+      }, 1150);
+    }
+
+    function hideGapEffects() {
+      gapLayer.classList.remove('on');
+      gapLayer.innerHTML = '';
+      gapOrbEl = null;
+      gapState = 'idle';
+    }
+
+
+
+    /* ─────────────────────────────────────────
+       LYRIC DISPLAY
+    ───────────────────────────────────────── */
+    function clearLyricDisplay() {
+      lyricText.innerHTML   = '';
+      lyricText.className   = 'lyric-text color-white playfair';
+      lyricText.style.fontSize = '';
+      renderLyricDecorations([]);
+      sceneGlow.classList.remove('on');
+      orbitRing.classList.remove('on');
+      currentLyricId  = '';
+      lyricEffects.innerHTML = '';
+      showBigSpiral(false);
+      showHeartRain(false);
+    }
+
+    function renderLyricDecorations(items) {
+      lyricIcons.innerHTML = '';
+      lyricDust.innerHTML  = '';
+      const positions = [
+        ['8%','18%'], ['86%','20%'], ['14%','76%'], ['80%','70%'], ['50%','10%'], ['50%','84%']
+      ];
+      (items || []).slice(0, 6).forEach((ic, idx) => {
+        const s = document.createElement('span');
+        s.className   = 'note-icon';
+        s.textContent = ic;
+        const [left, top] = positions[idx % positions.length];
+        s.style.left  = left;
+        s.style.top   = top;
+        s.style.animationDelay = `${idx * .4}s`;
+        // fade in
+        s.style.opacity    = '0';
+        s.style.transition = 'opacity .6s ease';
+        lyricIcons.appendChild(s);
+        requestAnimationFrame(() => { s.style.opacity = '1'; });
+      });
+      makeParticles(lyricDust, 18, 0.8);
+    }
+
+    function showLyric(item) {
+      if (!item || !item.text) return;
+      const key = `${item.start}-${item.end}-${item.text}`;
+      if (currentLyricId === key) return;
+      currentLyricId = key;
+
+      showBigSpiral(false);
+      showHeartRain(false);
+
+      const mood = applySceneMood(item);
+
+      // set font + color classes (NOT display:inline-block — fitText handles sizing)
+      lyricText.className = `lyric-text ${mood.style}`;
+
+      // build char spans first (invisible) so fitText can measure actual text width
+      buildKaraokeChars(lyricText, item.text);
+
+      // size to fit on one line
+      const maxPx = window.innerWidth < 720 ? 38 : 64;
+      fitText(lyricText, maxPx, 16);
+
+      // spawn pulse ring at center
+      spawnPulseRing();
+
+      // reveal chars with stagger
+      requestAnimationFrame(() => {
+        triggerKaraokeReveal(lyricText);
+      });
+
+      renderLyricDecorations(item.deco || mood.deco);
+
+      if (mood.ring)                                          makeEffect('ring',   lyricEffects, 1);
+      else if (item.text.toLowerCase().includes('never cared')) makeEffect('wave', lyricEffects, 1);
+      else if (item.text.toLowerCase().includes('so close'))    makeEffect('spiral',lyricEffects,1);
+      else                                                       makeEffect('orb',  lyricEffects, 5);
+    }
+
+    /* ─────────────────────────────────────────
+       FINAL SCENE
+    ───────────────────────────────────────── */
+    let finalSceneStarted = false;
+
+    function setFinalScene() {
+      if (finalSceneStarted) return;
+      finalSceneStarted = true;
+
+      blackout.classList.add('on');
+      sceneGlow.classList.remove('on');
+      orbitRing.classList.remove('on');
+      showBigSpiral(false);
+      showHeartRain(false);
+      hideGapEffects();
+
+      showScene(endScene);
+      makeEffect('spiral', endEffects, 1);
+      makeEffect('orb',    endEffects, 8);
+
+      endMain.classList.remove('fade-out');
+      endFinal.classList.remove('show');
+      endFinalHeart.innerHTML = '';
+
+      setTimeout(() => {
+        blackout.classList.remove('on');
+        endMain.classList.add('show');
+      }, 200);
+
+      // Keep the "gracias" message on screen for a good while before
+      // transitioning to the final "te amo" message.
+      setTimeout(() => {
+        endMain.classList.add('fade-out');
+      }, 9000);
+
+      setTimeout(() => {
+        endFinalHeart.innerHTML = NEON_HEART_SVG;
+        endFinal.classList.add('show');
+      }, 10400);
+    }
+
+    /* ─────────────────────────────────────────
+       LYRICS JSON
+    ───────────────────────────────────────── */
+    function cleanLyrics(raw) {
+      if (!Array.isArray(raw)) return [];
+      return raw
+        .map(item => ({
+          text : String(item?.text ?? '').trim(),
+          start: Number(item?.start),
+          end  : Number(item?.end),
+        }))
+        .filter(item => Number.isFinite(item.start) && Number.isFinite(item.end) && item.end > item.start)
+        .filter(item => item.text.length >= 4)
+        .filter(item => item.text.split(' ').filter(Boolean).length >= 2)
+        .sort((a, b) => a.start - b.start);
+    }
+
+    function getCurrentLyric(t) {
+      for (const item of lyrics) {
+        if (t >= item.start && t < item.end) return item;
+      }
+      return null;
+    }
+
+    // Threshold above which an inter-lyric gap is treated as a "guitar solo"
+    // (big spiral) instead of the small wandering-orb gap filler.
+    const SOLO_GAP_THRESHOLD = 8; // seconds
+
+    let lyricGaps = []; // { start, end, solo:boolean }
+
+    function buildLyricGaps() {
+      lyricGaps = [];
+      let soloCount = 0;
+      for (let i = 0; i < lyrics.length - 1; i++) {
+        const gapStart = lyrics[i].end;
+        const gapEnd   = lyrics[i + 1].start;
+        const dur = gapEnd - gapStart;
+        if (dur > 0.6) {
+          const isSolo = dur >= SOLO_GAP_THRESHOLD;
+          if (isSolo) soloCount++;
+          lyricGaps.push({ start: gapStart, end: gapEnd, solo: isSolo, soloIndex: isSolo ? soloCount : 0 });
+        }
+      }
+    }
+
+    function getCurrentGap(t) {
+      for (const g of lyricGaps) {
+        if (t >= g.start && t < g.end) return g;
+      }
+      return null;
+    }
+
+    async function loadLyrics() {
+      try {
+        const res = await fetch('lyrics.json');
+        const raw = await res.json();
+        lyrics = cleanLyrics(raw);
+        firstLyricStart = lyrics.length ? lyrics[0].start : Infinity;
+        lastLyricEnd    = lyrics.length ? Math.max(...lyrics.map(l => l.end)) : 0;
+        buildLyricGaps();
+        console.log('Lyrics cargadas:', lyrics.length, 'gaps:', lyricGaps.length);
+      } catch (err) {
+        console.error('No se pudo cargar lyrics.json', err);
+      }
+    }
+
+    /* ─────────────────────────────────────────
+       INTRO TIMELINE
+    ───────────────────────────────────────── */
+    const introLines = [
+      'Hay canciones que escuchamos...',
+      'Y hay canciones que sentimos.',
+      'Hay momentos que se quedan con nosotros...'
+    ];
+
+    async function introTimeline() {
+      if (introRunning) return;
+      introRunning = true;
+      startWrap.style.opacity   = '0';
+      startWrap.style.transform = 'scale(.98)';
+      setTimeout(() => { startWrap.style.display = 'none'; }, 900);
+
+      clearIntro();
+      showScene(introScene);
+      blackout.classList.remove('on');
+      sceneGlow.classList.add('on');
+      refreshAmbientParticles();
+      makeEffect('orb', introParticles, 6);
+
+      await introSleep(650);
+      await typeInto(line1, introLines[0], 34);
+      await introSleep(1200);
+      line1.style.opacity = '0'; line1.style.transform = 'translateY(-6px)';
+      await introSleep(650);
+
+      await typeInto(line2, introLines[1], 34);
+      await introSleep(1550);
+      line2.style.opacity = '0'; line2.style.transform = 'translateY(-6px)';
+      await introSleep(850);
+
+      await typeInto(line3, introLines[2], 32);
+      await introSleep(900);
+      line3.style.opacity = '0'; line3.style.transform = 'translateY(-6px)';
+      await introSleep(700);
+
+      line3.textContent = 'Y personas que hacen que esos momentos sean especiales.';
+      line3.classList.add('show');
+      line3.style.opacity   = '1';
+      line3.style.transform = 'none';
+      sparkLine.classList.add('show');
+      await introSleep(1000);
+
+      signature.classList.add('show');
+      await introSleep(450);
+      heart.classList.add('show');
+      await introSleep(1800);
+
+      blackout.classList.add('on');
+      await introSleep(1800);
+
+      showScene(nowPlayingScene);
+      sceneGlow.classList.remove('on');
+      orbitRing.classList.remove('on');
+      audio.currentTime = 0;
+      try { await audio.play(); } catch(e) {}
+      await introSleep(150);
+      blackout.classList.remove('on');
+    }
+
+    playBtn.addEventListener('click', introTimeline);
+
+    /* ─────────────────────────────────────────
+       AUDIO → SCENE SWITCHING
+    ───────────────────────────────────────── */
+    // Heart-burst fires this many seconds before the next lyric starts
+    const HEART_BURST_LEAD = 1.1;
+
+    let lastGapKey = null; // tracks which gap (by start time) we're currently in, to avoid re-triggering
+
+    audio.addEventListener('timeupdate', () => {
+      const t = audio.currentTime;
+
+      // ── Guitar intro (before first lyric): "Now Playing" screen ──
+      if (t < firstLyricStart) {
+        showScene(nowPlayingScene);
+        showBigSpiral(false);
+        showHeartRain(false);
+        hideGapEffects();
+        lastGapKey = null;
+        return;
+      }
+
+      if (lastLyricEnd && t >= lastLyricEnd) {
+        setFinalScene();
+        lastGapKey = null;
+        return;
+      }
+
+      const current = getCurrentLyric(t);
+
+      if (current) {
+        showScene(lyricScene);
+        showLyric(current);
+        hideGapEffects();
+        lastGapKey = null;
+        blackout.classList.remove('on');
+        return;
+      }
+
+      // ── Between lyrics ──
+      showScene(lyricScene);
+      clearLyricDisplay();
+      blackout.classList.remove('on');
+
+      const gap = getCurrentGap(t);
+      if (gap && gap.solo) {
+        // Long instrumental break (guitar solo): big animated spiral
+        hideGapEffects();
+        if (gap.soloIndex === 2) {
+          // Second solo: heart rain instead of the spiral
+          showBigSpiral(false);
+          showHeartRain(true);
+        } else {
+          showHeartRain(false);
+          showBigSpiral(true);
+        }
+        lastGapKey = gap.start;
+      } else if (gap) {
+        showBigSpiral(false);
+        showHeartRain(false);
+        const timeToNext = gap.end - t;
+        const key = gap.start;
+
+        if (timeToNext <= HEART_BURST_LEAD) {
+          if (lastGapKey !== key || gapState !== 'bursting') {
+            burstGapOrbToHeart();
+          }
+        } else {
+          if (lastGapKey !== key) {
+            showGapOrb();
+          }
+        }
+        lastGapKey = key;
+      } else {
+        // No defined gap (shouldn't usually happen once lyrics start)
+        showBigSpiral(false);
+        showHeartRain(false);
+        hideGapEffects();
+        lastGapKey = null;
+      }
+    });
+
+    audio.addEventListener('ended', () => { setFinalScene(); });
+
+    /* ─────────────────────────────────────────
+       STAR CANVAS
+    ───────────────────────────────────────── */
+    const starCanvas = document.getElementById('stars');
+    const starCtx    = starCanvas.getContext('2d');
+    const glowCanvas = document.getElementById('glow');
+    const glowCtx    = glowCanvas.getContext('2d');
+    const stars = [];
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      [starCanvas, glowCanvas].forEach(c => {
+        c.width  = innerWidth  * dpr;
+        c.height = innerHeight * dpr;
+        c.style.width  = innerWidth  + 'px';
+        c.style.height = innerHeight + 'px';
+        c.getContext('2d').setTransform(dpr,0,0,dpr,0,0);
+      });
+      initStars();
+      initNebula();
+    }
+
+    function initStars() {
+      stars.length = 0;
+      const count = Math.floor((innerWidth * innerHeight) / 13000);
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x : Math.random() * innerWidth,
+          y : Math.random() * innerHeight,
+          r : Math.random() * 1.5 + 0.2,
+          a : Math.random() * Math.PI * 2,
+          s : Math.random() * 0.012 + 0.004,
+          vx: (Math.random() - .5) * .025,
+          vy: (Math.random() - .5) * .025,
+        });
+      }
+    }
+
+    function draw() {
+      starCtx.clearRect(0,0,innerWidth,innerHeight);
+      glowCtx.clearRect(0,0,innerWidth,innerHeight);
+
+      for (const s of stars) {
+        s.a += s.s;
+        s.x += s.vx; s.y += s.vy;
+        if (s.x < -10) s.x = innerWidth  + 10;
+        if (s.x > innerWidth  + 10) s.x = -10;
+        if (s.y < -10) s.y = innerHeight + 10;
+        if (s.y > innerHeight + 10) s.y = -10;
+
+        const tw = .35 + Math.abs(Math.sin(s.a)) * .65;
+        starCtx.beginPath();
+        starCtx.fillStyle = `rgba(255,255,255,${tw})`;
+        starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        starCtx.fill();
+
+        glowCtx.beginPath();
+        glowCtx.fillStyle = `rgba(185,108,255,${tw * .22})`;
+        glowCtx.arc(s.x, s.y, s.r * 5.5, 0, Math.PI * 2);
+        glowCtx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+
+    /* ─────────────────────────────────────────
+       INIT
+    ───────────────────────────────────────── */
+    window.addEventListener('resize', () => {
+      resize();
+      refreshAmbientParticles();
+    });
+
+    loadLyrics();
+    resize();
+    draw();
+    drawNebula();
+    refreshAmbientParticles();
+    showScene(introScene);
+  </script>
+</body>
+</html>
